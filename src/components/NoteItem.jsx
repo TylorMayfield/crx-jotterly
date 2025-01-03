@@ -1,5 +1,13 @@
 /* eslint-disable react/prop-types */
-import { Paper, Group, Text, Badge, ActionIcon, Modal } from "@mantine/core";
+import {
+  Paper,
+  Group,
+  Text,
+  Badge,
+  Button,
+  Modal,
+  ActionIcon,
+} from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -30,11 +38,11 @@ const NoteItem = ({ note, onDelete, onSelect }) => {
             position: "absolute",
             top: 0,
             right: 0,
-            width: "12px", // Thin vertical red stripe
+            width: "12px",
             height: "100%",
             backgroundColor: "red",
-            borderTopRightRadius: "8px", // Rounded top corners
-            borderBottomRightRadius: "8px", // Rounded bottom corners
+            borderTopRightRadius: "8px",
+            borderBottomRightRadius: "8px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,13 +53,13 @@ const NoteItem = ({ note, onDelete, onSelect }) => {
             variant="transparent"
             color="white"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent trigger of onSelect
+              e.stopPropagation();
               setModalOpen(true);
             }}
             style={{
-              padding: 4, // Smaller padding to make it subtle
+              padding: 6,
               cursor: "pointer",
-              fontSize: "14px", // Smaller icon size
+              fontSize: "14px",
             }}
           >
             <IconX size={14} />
@@ -92,8 +100,12 @@ const NoteItem = ({ note, onDelete, onSelect }) => {
       >
         <Text>Are you sure you want to delete this note?</Text>
         <Group position="right" mt="md">
-          <ActionIcon onClick={() => setModalOpen(false)}>Cancel</ActionIcon>
-          <ActionIcon color="red" onClick={handleDelete}>Delete</ActionIcon>
+          <Button variant="subtle" onClick={() => setModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="filled" color="red" onClick={handleDelete}>
+            Delete
+          </Button>
         </Group>
       </Modal>
     </>
