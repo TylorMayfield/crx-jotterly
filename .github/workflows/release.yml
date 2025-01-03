@@ -1,0 +1,63 @@
+name: Build and Release Extension
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*" # Trigger on version tags like v1.0.0
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Generate version number
+        id: version
+        run: |
+          # Get the most recent tag or use the current date/commit if no tag is found
+          VERSION_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          # Increment patch version
+          VERSION=$(echo $VERSION_TAG | awk -F. -v OFS=. '{$NF++;print}')
+          echo "New version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Zip extension
+        run: |
+          cd dist
+          zip -r ../extension.zip *
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: extension.zip
+          tag_name: ${{ env.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Push new version tag
+        if: startsWith(github.ref, 'refs/heads/')
+        run: |
+          # Create a new version tag and push it to the repository
+          git tag ${{ env.version }}
+          git push origin ${{ env.version }}
