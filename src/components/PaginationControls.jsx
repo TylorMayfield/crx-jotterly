@@ -3,7 +3,7 @@ import { Box, Pagination } from "@mantine/core";
 
 const PaginationControls = ({ totalPages, currentPage, setCurrentPage }) => {
   return (
-    <Box p="md" pt="xs" style={{ borderTop: "1px solid #eee" }}>
+    <Box p="md" pt="xs" style={{ display: "flex", justifyContent: "center" }}>
       {totalPages > 1 && (
         <Pagination
           total={totalPages}

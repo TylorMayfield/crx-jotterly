@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { 
+import {
   TextInput,
   Stack,
   Group,
   Badge,
   ActionIcon,
-  Text,
   Box,
   Textarea,
 } from "@mantine/core";
@@ -119,19 +118,9 @@ const Note = ({ note, setNotes, notes }) => {
               border: "none",
               padding: "1rem",
               height: "100%",
-              backgroundColor: "white",
-              "&:focus": {
-                border: "none",
-              },
             },
           }}
         />
-      </Box>
-
-      <Box p="xs" style={{ borderTop: "1px solid #eee" }}>
-        <Text size="xs" color="dimmed">
-          Last modified: {new Date(note.lastModified || Date.now()).toLocaleString()}
-        </Text>
       </Box>
     </Stack>
   );

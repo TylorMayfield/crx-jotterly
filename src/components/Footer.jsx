@@ -1,12 +1,15 @@
-import { Text, Center, Box, Group } from "@mantine/core";
+import { Text, Center, Box, Group, useMantineColorScheme } from "@mantine/core";
 import { IconCoffee } from "@tabler/icons-react";
 
 const Footer = () => {
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
+
   return (
-    <Center h="100%" bg="white" p="md">
+    <Center h="100%" mt="auto" p="md">
       <Box>
         <Group position="center" spacing="md">
-          <Text size="sm" color="dimmed">
+          <Text size="sm" c={dark ? "dimmed" : "gray"}>
             &copy; 2025 Jotterly. All rights reserved.{" "}
             <a
               href="https://ko-fi.com/tylormayfield"

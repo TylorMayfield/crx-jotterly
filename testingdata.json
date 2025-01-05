@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "timestamp": 1736099959653,
+  "notes": [
+    {
+      "id": 1,
+      "title": "Grocery List",
+      "content": "- Apples\n- Bananas\n- Bread\n- Milk",
+      "tags": ["shopping", "groceries"],
+      "created": 1672840834000,
+      "lastModified": 1672840834000,
+      "pinned": false
+    },
+    {
+      "id": 2,
+      "title": "Meeting Notes",
+      "content": "Discuss project updates and next steps.\n\n1. Review last week's progress.\n2. Plan for the upcoming sprint.\n3. Assign tasks to team members.",
+      "tags": ["work", "meetings"],
+      "created": 1672840834000,
+      "lastModified": 1672840834000,
+      "pinned": true
+    },
+    {
+      "id": 3,
+      "title": "Ideas for Blog Posts",
+      "content": "- How to stay productive while working from home\n- The benefits of meditation\n- Tips for effective time management",
+      "tags": ["writing", "blogging"],
+      "created": 1672840834000,
+      "lastModified": 1672840834000,
+      "pinned": false
+    },
+    {
+      "id": 4,
+      "title": "Travel Plans",
+      "content": "- Book flights to Paris\n- Reserve hotel in the city center\n- Create itinerary for sightseeing",
+      "tags": ["travel", "vacation"],
+      "created": 1672840834000,
+      "lastModified": 1672840834000,
+      "pinned": false
+    }
+  ]
+}

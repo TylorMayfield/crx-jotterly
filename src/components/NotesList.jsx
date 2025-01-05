@@ -2,7 +2,7 @@
 import { Stack, Transition } from "@mantine/core";
 import NoteItem from "./NoteItem";
 
-const NotesList = ({ paginatedNotes, deleteNote, setSelectedNote }) => {
+const NotesList = ({ paginatedNotes, deleteNote, setSelectedNote, togglePinNote }) => {
   return (
     <Stack spacing="xs">
       {paginatedNotes.map((note) => (
@@ -18,6 +18,7 @@ const NotesList = ({ paginatedNotes, deleteNote, setSelectedNote }) => {
               note={note}
               onDelete={() => deleteNote(note.id)}
               onSelect={() => setSelectedNote(note.id)}
+              togglePinNote={() => togglePinNote(note.id)}
             />
           )}
         </Transition>

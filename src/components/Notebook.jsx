@@ -24,6 +24,14 @@ const Notebook = ({ notes, setNotes }) => {
     }
   };
 
+  const togglePinNote = (noteId) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === noteId ? { ...note, pinned: !note.pinned } : note
+      )
+    );
+  };
+
   const filteredNotes = notes.filter((note) => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -33,8 +41,10 @@ const Notebook = ({ notes, setNotes }) => {
     );
   });
 
-  const totalPages = Math.ceil(filteredNotes.length / NOTES_PER_PAGE);
-  const paginatedNotes = filteredNotes.slice(
+  const sortedNotes = [...filteredNotes].sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
+
+  const totalPages = Math.ceil(sortedNotes.length / NOTES_PER_PAGE);
+  const paginatedNotes = sortedNotes.slice(
     (currentPage - 1) * NOTES_PER_PAGE,
     currentPage * NOTES_PER_PAGE
   );
@@ -63,7 +73,7 @@ const Notebook = ({ notes, setNotes }) => {
           </Box>
 
           <Box style={{ flex: 1, overflowY: "auto" }} px="md">
-            <NotesList paginatedNotes={paginatedNotes} deleteNote={deleteNote} setSelectedNote={setSelectedNote} />
+            <NotesList paginatedNotes={paginatedNotes} deleteNote={deleteNote} setSelectedNote={setSelectedNote} togglePinNote={togglePinNote} />
           </Box>
 
           <PaginationControls totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />

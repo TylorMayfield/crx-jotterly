@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
-import { Group, Title, ActionIcon, Menu } from '@mantine/core';
-import { IconPencil, IconDots, IconDownload, IconUpload, IconPlus } from '@tabler/icons-react';
+import { Group, Title, ActionIcon, Menu, useMantineColorScheme } from '@mantine/core';
+import { IconPencil, IconDots, IconDownload, IconUpload, IconPlus, IconMoon, IconSun } from '@tabler/icons-react';
 
 const Header = ({ onNewNote, onExport, onImport }) => {
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
     <Group justify="space-between" h="100%" px="md">
       <Group>
@@ -34,6 +37,12 @@ const Header = ({ onNewNote, onExport, onImport }) => {
                   style={{ display: 'none' }}
                 />
               </label>
+            </Menu.Item>
+            <Menu.Item 
+              leftSection={isDark ? <IconSun size={14} /> : <IconMoon size={14} />} 
+              onClick={() => toggleColorScheme()}
+            >
+              {isDark ? 'Light Mode' : 'Dark Mode'}
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
