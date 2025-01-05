@@ -176,7 +176,7 @@ function App() {
             <Header
               onNewNote={addNote}
               onExport={exportNotes}
-              onImport={() => fileInputRef.current.click()}
+              onImport={importNotes}
             />
           </AppShell.Header>
 
