@@ -10,13 +10,12 @@ import {
   IconPencil,
   IconDots,
   IconDownload,
-  IconUpload,
   IconPlus,
   IconMoon,
   IconSun,
 } from "@tabler/icons-react";
 
-const Header = ({ onNewNote, onExport, onImport }) => {
+const Header = ({ onNewNote, onExport }) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -44,22 +43,14 @@ const Header = ({ onNewNote, onExport, onImport }) => {
             >
               Export Notes
             </Menu.Item>
-            <Menu.Item leftSection={<IconUpload size={14} />}>
-              <label style={{ cursor: "pointer", display: "block" }}>
-                Import Notes
-                <input
-                  type="file"
-                  accept="application/json"
-                  onChange={onImport}
-                  style={{ display: "none" }}
-                />
-              </label>
-            </Menu.Item>
+
             <Menu.Item
               leftSection={
                 isDark ? <IconSun size={14} /> : <IconMoon size={14} />
               }
-              onClick={() => toggleColorScheme()}
+              onClick={() => {
+                toggleColorScheme();
+              }}
             >
               {isDark ? "Light Mode" : "Dark Mode"}
             </Menu.Item>

@@ -105,25 +105,16 @@ function App() {
   });
 
   const importNotes = (event) => {
+    console.log("Importing notes...");
     const file = event.target.files[0];
-
-    const loadingNotification = notifications.show({
-      title: "Importing Notes",
-      message: "Please wait...",
-      loading: true,
-      autoClose: false,
-    });
-
-    const fileExtension = file.name.split(".").pop().toLowerCase();
-    if (file.type !== "application/json" && fileExtension !== "json") {
-      notifications.update(loadingNotification, {
-        title: "Error",
-        message: "Invalid file format. Please select a JSON file.",
-        color: "red",
-        loading: false,
-      });
+    if (!file) {
+      console.error("No file selected");
       return;
     }
+
+    console.log("Selected file:", file);
+
+    const fileExtension = file.name.split(".").pop().toLowerCase();
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -135,48 +126,33 @@ function App() {
           ? content
           : content.notes || [];
         const sanitizedNotes = importedNotes.map(validateNote);
-
         setNotes(sanitizedNotes);
-        notifications.update(loadingNotification, {
-          title: "Success",
-          message: `${sanitizedNotes.length} notes imported successfully`,
-          color: "green",
-          loading: false,
-        });
       } catch (error) {
         console.error("Parsing error:", error);
-        notifications.update(loadingNotification, {
-          title: "Error",
-          message: "Failed to parse the file. Please check the JSON format.",
-          color: "red",
-          loading: false,
-        });
       }
     };
 
     reader.onerror = () => {
       console.error("File read error");
-      notifications.update(loadingNotification, {
-        title: "Error",
-        message: "Failed to read the file",
-        color: "red",
-        loading: false,
-      });
     };
 
+    console.log("Starting to read the file...");
     reader.readAsText(file);
+    console.log("File reading initiated.");
   };
 
   return (
     <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
-      <Notifications />
       <Box style={{ width: 400, height: 600 }}>
         <AppShell header={{ height: 60 }} footer={{ height: 40 }} padding="0">
           <AppShell.Header>
             <Header
               onNewNote={addNote}
               onExport={exportNotes}
-              onImport={importNotes}
+              onImport={() => {
+                console.log("Import button clicked");
+                fileInputRef.current.click();
+              }}
             />
           </AppShell.Header>
 
@@ -198,7 +174,11 @@ function App() {
         accept=".json"
         style={{ display: "none" }}
         ref={fileInputRef}
-        onChange={importNotes}
+        onChange={(event) => {
+          console.log("File input changed");
+          importNotes(event);
+          console.log("File input changed and importNotes called");
+        }}
       />
     </MantineProvider>
   );

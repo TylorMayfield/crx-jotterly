@@ -8,7 +8,7 @@ import {
   Modal,
   ActionIcon,
 } from "@mantine/core";
-import { IconX, IconPin } from "@tabler/icons-react";
+import { IconPin, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 
 const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
@@ -55,7 +55,7 @@ const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
             left: 0,
             width: "12px",
             height: "100%",
-            backgroundColor: note.pinned ? "#228be6" : "#e9ecef",
+            backgroundColor: note.pinned ? "#1c7ed6" : "#e9ecef",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -65,19 +65,19 @@ const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
             e.currentTarget.style.width = "24px";
             e.currentTarget.style.backgroundColor = note.pinned
               ? "#1c7ed6"
-              : "#dee2e6";
+              : "#dbe2e6";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.width = "12px";
             e.currentTarget.style.backgroundColor = note.pinned
-              ? "#228be6"
+              ? "#1c7ed6"
               : "#e9ecef";
           }}
         >
           {/* Pin Icon */}
           <ActionIcon
             variant="transparent"
-            color={note.pinned ? "white" : "gray"}
+            color={note.pinned ? "white" : "#495057"}
             style={{
               padding: 6,
               cursor: "pointer",
@@ -125,7 +125,7 @@ const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
               fontSize: "14px",
             }}
           >
-            <IconX size={14} />
+            <IconTrash size={14} />
           </ActionIcon>
         </div>
 
