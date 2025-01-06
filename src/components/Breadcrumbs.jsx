@@ -4,7 +4,7 @@ import { IconChevronLeft } from "@tabler/icons-react";
 
 const Breadcrumbs = ({ selectedNote, onBack, currentNote }) => {
   return (
-    <Group px="md" py="xs">
+    <Group px="md" py="xs" spacing="xs">
       {selectedNote ? (
         <>
           <Button

@@ -1,12 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { Badge, Tooltip, Stack, Paper } from "@mantine/core";
-import {
-  IconTrophy,
-  IconNotes,
-  IconPin,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconNotes, IconPin, IconSearch } from "@tabler/icons-react";
 
 const achievements = {
   firstNote: {
@@ -28,7 +23,7 @@ const achievements = {
     title: "Pin Master",
     description: "Pinned your first note",
     icon: IconPin,
-    condition: (stats) => stats.pinnedNotes >= 1,
+    condition: (stats) => stats.pinned >= 1,
   },
   firstSearch: {
     id: "firstSearch",
@@ -36,28 +31,6 @@ const achievements = {
     description: "Performed your first search",
     icon: IconSearch,
     condition: (stats) => stats.searches >= 1,
-  },
-  trophyAchievement: {
-    id: "trophyAchievement",
-    title: "Trophy Collector",
-    description: "Collected your first trophy",
-    icon: IconTrophy,
-    condition: (stats) => stats.trophies >= 1,
-  },
-  masterCollector: {
-    id: "masterCollector",
-    title: "Master Collector",
-    description: "Collected 5 trophies",
-    icon: IconTrophy,
-    condition: (stats) => stats.trophies >= 5,
-  },
-  achievementHunter: {
-    id: "achievementHunter",
-    title: "Achievement Hunter",
-    description: "Unlocked all achievements",
-    icon: IconTrophy,
-    condition: (stats) =>
-      stats.achievementsUnlocked === Object.keys(achievements).length,
   },
 };
 
@@ -82,7 +55,7 @@ const AchievementBadge = ({ achievement, unlocked }) => {
 
 const Achievements = ({ stats }) => {
   return (
-    <Stack spacing="md">
+    <Stack spacing="sm">
       {Object.entries(achievements).map(([key, achievement]) => (
         <Paper key={key} p="sm" withBorder>
           <AchievementBadge

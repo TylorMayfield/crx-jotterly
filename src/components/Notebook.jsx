@@ -1,13 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import {
-  Stack,
-  Box,
-} from "@mantine/core";
-import Breadcrumbs from './Breadcrumbs';
-import SearchInput from './SearchInput';
-import NotesList from './NotesList';
-import PaginationControls from './PaginationControls';
+import { Stack, Box } from "@mantine/core";
+import Breadcrumbs from "./Breadcrumbs";
+import SearchInput from "./SearchInput";
+import NotesList from "./NotesList";
+import PaginationControls from "./PaginationControls";
 import Note from "./Note";
 
 const NOTES_PER_PAGE = 3;
@@ -19,9 +16,9 @@ const Notebook = ({ notes, setNotes, setStats }) => {
 
   useEffect(() => {
     if (searchTerm) {
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
-        searches: prev.searches + 1
+        searches: prev.searches + 1,
       }));
     }
   }, [searchTerm, setStats]);
@@ -35,9 +32,20 @@ const Notebook = ({ notes, setNotes, setStats }) => {
 
   const togglePinNote = (noteId) => {
     setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === noteId ? { ...note, pinned: !note.pinned } : note
-      )
+      prevNotes.map((note) => {
+        if (note.id === noteId) {
+          const newPinnedState = !note.pinned;
+          const updatedPinnedCount = newPinnedState ? prevNotes.filter(n => n.pinned).length + 1 : prevNotes.filter(n => n.pinned).length - 1;
+
+          setStats((prevStats) => ({
+            ...prevStats,
+            pinned: updatedPinnedCount,
+          }));
+
+          return { ...note, pinned: newPinnedState };
+        }
+        return note;
+      })
     );
   };
 
@@ -50,7 +58,9 @@ const Notebook = ({ notes, setNotes, setStats }) => {
     );
   });
 
-  const sortedNotes = [...filteredNotes].sort((a, b) => (b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1));
+  const sortedNotes = [...filteredNotes].sort((a, b) =>
+    b.pinned === a.pinned ? 0 : b.pinned ? 1 : -1
+  );
 
   const totalPages = Math.ceil(sortedNotes.length / NOTES_PER_PAGE);
   const paginatedNotes = sortedNotes.slice(
@@ -63,8 +73,12 @@ const Notebook = ({ notes, setNotes, setStats }) => {
     : null;
 
   return (
-    <Stack h="100%" spacing={0}>
-      <Breadcrumbs selectedNote={selectedNote} onBack={() => setSelectedNote(null)} currentNote={currentNote} />
+    <Stack spacing="sm" h="100%">
+      <Breadcrumbs
+        selectedNote={selectedNote}
+        onBack={() => setSelectedNote(null)}
+        currentNote={currentNote}
+      />
 
       {selectedNote ? (
         /* Note Editor */
@@ -76,16 +90,28 @@ const Notebook = ({ notes, setNotes, setStats }) => {
         />
       ) : (
         /* Notes List */
-        <Stack spacing={0} h="100%">
-          <Box p="md" pb="xs">
-            <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <Stack spacing="xs" h="100%" style={{ flex: 1, "--stack-gap": "0px" }}>
+          <Box pt="xs" p="xs" pb="xs">
+            <SearchInput
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
           </Box>
 
-          <Box style={{ flex: 1, overflowY: "auto" }} px="md">
-            <NotesList paginatedNotes={paginatedNotes} deleteNote={deleteNote} setSelectedNote={setSelectedNote} togglePinNote={togglePinNote} />
+          <Box spacing="xs" style={{ flex: 1, overflowY: "auto" }} px="md">
+            <NotesList
+              paginatedNotes={paginatedNotes}
+              deleteNote={deleteNote}
+              setSelectedNote={setSelectedNote}
+              togglePinNote={togglePinNote}
+            />
           </Box>
 
-          <PaginationControls totalPages={totalPages} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+          <PaginationControls
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </Stack>
       )}
     </Stack>
