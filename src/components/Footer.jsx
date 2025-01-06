@@ -10,7 +10,6 @@ const Footer = () => {
       <Box>
         <Group position="center" spacing="md">
           <Text size="sm" c={dark ? "dimmed" : "gray"}>
-            &copy; 2025 Jotterly. All rights reserved.{" "}
             <a
               href="https://ko-fi.com/tylormayfield"
               target="_blank"
