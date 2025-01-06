@@ -1,14 +1,24 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, useRef } from "react";
 import { AppShell, Box, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
-import { Notifications, notifications } from "@mantine/notifications";
+
 import Header from "./components/Header";
 import Notebook from "./components/Notebook";
 import Footer from "./components/Footer";
+import Achievements from "./components/Achievements";
+import { showNoteNotification } from "./components/NotificationSystem";
+import "./styles/animations.css";
 
 function App() {
   const [notes, setNotes] = useState([]);
+  const [currentView, setCurrentView] = useState("notebook");
+  const [stats, setStats] = useState({
+    totalNotes: 0,
+    pinnedNotes: 0,
+    searches: 0,
+  });
   const preferredColorScheme = useColorScheme();
   const [colorScheme, setColorScheme] = useState(() => {
     const savedScheme = localStorage.getItem("color-scheme");
@@ -25,32 +35,56 @@ function App() {
   };
 
   useEffect(() => {
-    const storedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-    setNotes(storedNotes);
+    chrome.storage.local.get(["notes", "stats"], (result) => {
+      if (result.notes) {
+        setNotes(result.notes);
+      }
+      if (result.stats) {
+        setStats(result.stats);
+      }
+    });
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
+    chrome.storage.local.set({ notes });
   }, [notes]);
+
+  useEffect(() => {
+    chrome.storage.local.set({ stats });
+  }, [stats]);
 
   const addNote = () => {
     const newNote = {
-      id: Date.now(),
-      title: "Untitled Note",
+      id: Date.now().toString(),
       content: "",
-      tags: [],
-      created: Date.now(),
-      lastModified: Date.now(),
+      timestamp: new Date().toISOString(),
       pinned: false,
     };
-    setNotes([newNote, ...notes]);
+    setNotes((prevNotes) => [newNote, ...prevNotes]);
+    setStats((prevStats) => ({
+      ...prevStats,
+      totalNotes: prevStats.totalNotes + 1,
+    }));
+    showNoteNotification("create", "Note created!");
   };
 
   const togglePinNote = (noteId) => {
-    setNotes(
-      notes.map((note) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) => {
         if (note.id === noteId) {
-          return { ...note, pinned: !note.pinned };
+          const newPinnedState = !note.pinned;
+          if (newPinnedState) {
+            setStats((prevStats) => ({
+              ...prevStats,
+              pinnedNotes: prevStats.pinnedNotes + 1,
+            }));
+          } else {
+            setStats((prevStats) => ({
+              ...prevStats,
+              pinnedNotes: Math.max(0, prevStats.pinnedNotes - 1),
+            }));
+          }
+          return { ...note, pinned: newPinnedState };
         }
         return note;
       })
@@ -58,86 +92,40 @@ function App() {
   };
 
   const exportNotes = () => {
-    try {
-      const exportData = {
-        version: "1.0",
-        timestamp: Date.now(),
-        notes: notes.map((note) => ({
-          ...note,
-          lastModified: Date.now(),
-        })),
-      };
-
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: "application/json",
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const timestamp = new Date().toISOString().split("T")[0];
-      a.href = url;
-      a.download = `jotterly-notes-${timestamp}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      notifications.show({
-        title: "Success",
-        message: "Notes exported successfully",
-        color: "green",
-      });
-    } catch (error) {
-      notifications.show({
-        title: "Error",
-        message: "Failed to export notes",
-        color: "red",
-      });
-    }
+    const notesJson = JSON.stringify(notes, null, 2);
+    const blob = new Blob([notesJson], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "jotterly-notes.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
-  const validateNote = (note) => ({
-    id: note.id || Date.now(),
-    title: note.title || "Untitled Note",
-    content: note.content || "",
-    tags: Array.isArray(note.tags) ? note.tags : [],
-    created: note.created || Date.now(),
-    lastModified: Date.now(),
-    pinned: Boolean(note.pinned),
-  });
-
   const importNotes = (event) => {
-    console.log("Importing notes...");
+    console.log("Import function called");
     const file = event.target.files[0];
     if (!file) {
-      console.error("No file selected");
+      console.log("No file selected");
       return;
     }
-
-    console.log("Selected file:", file);
-
-    const fileExtension = file.name.split(".").pop().toLowerCase();
 
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const content = JSON.parse(e.target.result);
-        console.log("Parsed content:", content);
-
-        let importedNotes = Array.isArray(content)
-          ? content
-          : content.notes || [];
-        const sanitizedNotes = importedNotes.map(validateNote);
-        setNotes(sanitizedNotes);
+        const importedNotes = JSON.parse(e.target.result);
+        setNotes((prevNotes) => [...importedNotes, ...prevNotes]);
+        showNoteNotification("Notes imported successfully!");
       } catch (error) {
-        console.error("Parsing error:", error);
+        console.error("Error parsing JSON:", error);
+        showNoteNotification("Error importing notes. Invalid file format.");
       }
     };
 
-    reader.onerror = () => {
-      console.error("File read error");
-    };
-
-    console.log("Starting to read the file...");
     reader.readAsText(file);
+    event.target.value = null;
     console.log("File reading initiated.");
   };
 
@@ -153,15 +141,26 @@ function App() {
                 console.log("Import button clicked");
                 fileInputRef.current.click();
               }}
+              onViewChange={setCurrentView}
+              currentView={currentView}
             />
           </AppShell.Header>
 
           <AppShell.Main>
-            <Notebook
-              notes={notes}
-              setNotes={setNotes}
-              togglePinNote={togglePinNote}
-            />
+            {currentView === "notebook" ? (
+              <Notebook
+                notes={notes}
+                setNotes={setNotes}
+                togglePinNote={togglePinNote}
+              />
+            ) : (
+              <Box p="md">
+                <Achievements
+                  stats={stats}
+                  onBack={() => setCurrentView("notebook")}
+                />
+              </Box>
+            )}
           </AppShell.Main>
 
           <AppShell.Footer>

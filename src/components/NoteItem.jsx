@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { IconPin, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
+import { showNoteNotification } from './NotificationSystem';
 
 const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -17,6 +18,7 @@ const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
   const handleDelete = () => {
     onDelete();
     setModalOpen(false);
+    showNoteNotification('delete', 'Note has been deleted');
   };
 
   const handlePinClick = (e) => {
@@ -35,14 +37,13 @@ const NoteItem = ({ note, onDelete, onSelect, togglePinNote }) => {
           position: "relative",
           borderRadius: "8px",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          transition: "box-shadow 0.2s ease, transform 0.2s ease",
+          transition: "all 0.3s ease",
           willChange: "transform",
-          animation: "slide-up 0.3s ease-out",
+          animation: "slideIn 0.3s ease-out",
           overflow: "hidden",
           "&:hover": {
             boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            transform: "translateY(-4px)",
-            scale: "1.02",
+            transform: "translateY(-4px) scale(1.02)",
           },
         }}
       >

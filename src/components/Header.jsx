@@ -13,9 +13,10 @@ import {
   IconPlus,
   IconMoon,
   IconSun,
+  IconTrophy,
 } from "@tabler/icons-react";
 
-const Header = ({ onNewNote, onExport }) => {
+const Header = ({ onNewNote, onExport, onViewChange, currentView }) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -27,9 +28,11 @@ const Header = ({ onNewNote, onExport }) => {
       </Group>
 
       <Group>
-        <ActionIcon variant="subtle" onClick={onNewNote}>
-          <IconPlus size={20} />
-        </ActionIcon>
+        {currentView === "notebook" && (
+          <ActionIcon variant="subtle" onClick={onNewNote}>
+            <IconPlus size={20} />
+          </ActionIcon>
+        )}
         <Menu position="bottom-end" withArrow>
           <Menu.Target>
             <ActionIcon variant="subtle">
@@ -37,13 +40,29 @@ const Header = ({ onNewNote, onExport }) => {
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item
-              leftSection={<IconDownload size={14} />}
-              onClick={onExport}
-            >
-              Export Notes
-            </Menu.Item>
-
+            {currentView === "notebook" ? (
+              <>
+                <Menu.Item
+                  leftSection={<IconTrophy size={14} />}
+                  onClick={() => onViewChange("achievements")}
+                >
+                  View Achievements
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={<IconDownload size={14} />}
+                  onClick={onExport}
+                >
+                  Export Notes
+                </Menu.Item>
+              </>
+            ) : (
+              <Menu.Item
+                leftSection={<IconPencil size={14} />}
+                onClick={() => onViewChange("notebook")}
+              >
+                Back to Notes
+              </Menu.Item>
+            )}
             <Menu.Item
               leftSection={
                 isDark ? <IconSun size={14} /> : <IconMoon size={14} />

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Stack,
   Box,
@@ -12,10 +12,19 @@ import Note from "./Note";
 
 const NOTES_PER_PAGE = 3;
 
-const Notebook = ({ notes, setNotes }) => {
+const Notebook = ({ notes, setNotes, setStats }) => {
   const [selectedNote, setSelectedNote] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (searchTerm) {
+      setStats(prev => ({
+        ...prev,
+        searches: prev.searches + 1
+      }));
+    }
+  }, [searchTerm, setStats]);
 
   const deleteNote = (noteId) => {
     setNotes(notes.filter((note) => note.id !== noteId));
