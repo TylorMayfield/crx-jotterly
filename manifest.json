@@ -3,7 +3,7 @@
   "name": "Jotterly",
   "version": "1.0",
   "description": "A powerful note-taking Chrome extension.",
-  "permissions": ["activeTab", "storage"],
+  "permissions": [],
   "options_page": "index.html",
   "action": {
     "default_popup": "index.html",
