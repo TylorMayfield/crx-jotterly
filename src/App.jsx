@@ -21,30 +21,56 @@ function App() {
   });
 
   useEffect(() => {
-    chrome.storage.local.get(["notes", "stats"], (result) => {
-      if (result.notes) {
-        setNotes(result.notes);
-      }
-      if (result.stats) {
-        setStats(result.stats);
-      } else {
-        setStats({
-          totalNotes: 0,
-          searches: 0,
-          pinned: 0,
-          deleted: 0,
-        });
-      }
-    });
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.storage &&
+      chrome.storage.local
+    ) {
+      chrome.storage.local.get(["notes", "stats"], (result) => {
+        if (result.notes) {
+          setNotes(result.notes);
+        }
+        if (result.stats) {
+          setStats(result.stats);
+        } else {
+          setStats({
+            totalNotes: 0,
+            searches: 0,
+            pinned: 0,
+            deleted: 0,
+          });
+        }
+      });
+    } else {
+      console.log("Chrome storage API not available - using default values");
+      setStats({
+        totalNotes: 0,
+        searches: 0,
+        pinned: 0,
+        deleted: 0,
+      });
+    }
   }, []);
 
   useEffect(() => {
-    chrome.storage.local.set({ notes });
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.storage &&
+      chrome.storage.local
+    ) {
+      chrome.storage.local.set({ notes });
+    }
   }, [notes]);
 
   useEffect(() => {
     console.log("Saving stats to local storage:", stats);
-    chrome.storage.local.set({ stats });
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.storage &&
+      chrome.storage.local
+    ) {
+      chrome.storage.local.set({ stats });
+    }
   }, [stats]);
 
   const addNote = () => {
@@ -63,16 +89,22 @@ function App() {
   };
 
   const deleteAllData = () => {
-    chrome.storage.local.clear(() => {
-      setNotes([]);
-      setStats({
-        totalNotes: 0,
-        searches: 0,
-        pinned: 0,
-        deleted: 0,
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.storage &&
+      chrome.storage.local
+    ) {
+      chrome.storage.local.clear(() => {
+        setNotes([]);
+        setStats({
+          totalNotes: 0,
+          searches: 0,
+          pinned: 0,
+          deleted: 0,
+        });
+        showNoteNotification("delete", "All data has been deleted");
       });
-      showNoteNotification("delete", "All data has been deleted");
-    });
+    }
   };
 
   return (
