@@ -16,7 +16,7 @@
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@mantine/core": "^7.15.2",
-    "@mantine/form": "^7.15.2",
+    "@mantine/form": "^7.16.0",
     "@mantine/hooks": "^7.15.3",
     "@mantine/notifications": "^7.15.2",
     "@tabler/icons-react": "^3.27.1",
