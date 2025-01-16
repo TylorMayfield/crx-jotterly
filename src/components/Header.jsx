@@ -19,6 +19,7 @@ import {
   IconSun,
   IconTrophy,
   IconTrash,
+  IconBrandPatreon,
 } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -90,6 +91,15 @@ const Header = ({
                   Back to Notes
                 </Menu.Item>
               )}
+              <Menu.Divider />
+              <Menu.Item
+                leftSection={<IconBrandPatreon size={14} />}
+                component="a"
+                href="https://www.patreon.com/c/TylorMayfield"
+                target="_blank"
+              >
+                Support on Patreon
+              </Menu.Item>
               <Menu.Item
                 leftSection={
                   isDark ? <IconSun size={14} /> : <IconMoon size={14} />
