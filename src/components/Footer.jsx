@@ -1,30 +1,37 @@
-import { Text, Center, Box, Group, useMantineColorScheme } from "@mantine/core";
-import { IconCoffee } from "@tabler/icons-react";
+import { Text, Center, Group } from "@mantine/core";
+import { IconBrandPatreon } from "@tabler/icons-react";
 
 const Footer = () => {
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
-
   return (
     <Center h="100%" mt="auto" p="md">
-      <Box>
-        <Group position="center" spacing="md">
-          <Text size="sm" c={dark ? "dimmed" : "gray"}>
-            <a
-              href="https://ko-fi.com/tylormayfield"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <IconCoffee
-                size={16}
-                style={{ verticalAlign: "middle", marginRight: "4px" }}
+      <footer className="footer-text">
+        <Group align="center" justify="center" style={{ width: "100%" }}>
+          <a
+            href="https://www.patreon.com/TylorMayfield"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
+          >
+            <Group align="center">
+              <IconBrandPatreon
+                style={{ display: "flex", alignItems: "center" }}
               />
-              Buy me a coffee
-            </a>
-          </Text>
+              <Text
+                size="sm"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                Support on Patreon
+              </Text>
+            </Group>
+          </a>
+          <Text size="sm">|</Text>
+          <Text size="sm">{new Date().getFullYear()} Tylor Mayfield</Text>
         </Group>
-      </Box>
+      </footer>
     </Center>
   );
 };

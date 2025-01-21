@@ -8,6 +8,7 @@ import Notebook from "./components/Notebook";
 import Achievements from "./components/Achievements";
 import { showNoteNotification } from "./components/NotificationSystem";
 import "./styles/animations.css";
+import Footer from "./components/Footer";
 
 function App() {
   const preferredColorScheme = useColorScheme();
@@ -139,6 +140,7 @@ function App() {
           </AppShell.Main>
         </AppShell>
       </Box>
+      <Footer />
     </MantineProvider>
   );
 }
