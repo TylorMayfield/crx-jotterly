@@ -2,6 +2,9 @@ name: Auto Update Packages
 
 on:
   workflow_dispatch:
+  schedule:
+    # Run the workflow once a week at midnight UTC on Sunday
+    - cron: "0 0 * * SUN"
 
 permissions:
   contents: write
@@ -19,9 +22,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18" # You can update this to the version you prefer
-
-      - name: Install dependencies
-        run: npm ci # Ensures that the exact versions in package-lock.json are installed
 
       - name: Delete old package-lock.json
         run: |
