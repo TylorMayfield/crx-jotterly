@@ -17,7 +17,7 @@
     "@heroicons/react": "^1.0.6",
     "@mantine/core": "^7.16.1",
     "@mantine/form": "^7.16.0",
-    "@mantine/hooks": "^7.15.3",
+    "@mantine/hooks": "^7.16.1",
     "@mantine/notifications": "^7.16.0",
     "@tabler/icons-react": "^3.27.1",
     "prop-types": "^15.8.1",
