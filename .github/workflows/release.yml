@@ -34,11 +34,21 @@ jobs:
         id: version
         run: |
           # Get the most recent tag or use the current date/commit if no tag is found
-          VERSION_TAG=$(git describe --tags --abbrev=0 || echo "v0.3")
+          VERSION_TAG=$(git describe --tags --abbrev=0 || echo "v1.0.0")
           # Increment patch version
-          VERSION=$(echo $VERSION_TAG | awk -F. -v OFS=. '{$NF++;print}')
+          VERSION=$(echo $VERSION_TAG | awk -F. -v OFS=. '{$NF++;print}' | sed 's/v//')
           echo "New version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Update manifest.json version
+        run: |
+          # Update version in manifest.json
+          jq --arg version "${{ env.version }}" '.version = $version' manifest.json > manifest_temp.json && mv manifest_temp.json manifest.json
+
+      - name: Update package.json version
+        run: |
+          # Update version in package.json
+          jq --arg version "${{ env.version }}" '.version = $version' package.json > package_temp.json && mv package_temp.json package.json
 
       - name: Zip extension
         run: |
@@ -55,9 +65,12 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
-      - name: Push new version tag
-        if: startsWith(github.ref, 'refs/heads/')
+      - name: Push new version tag and commit changes
         run: |
-          # Create a new version tag and push it to the repository
-          git tag ${{ env.version }}
-          git push origin ${{ env.version }}
+          # Commit the changes to manifest.json and package.json
+          git add manifest.json package.json
+          git commit -m "Bump version to ${{ env.version }}"
+          git push origin HEAD
+          # Push the new version tag to the repository
+          git tag v${{ env.version }}
+          git push origin v${{ env.version }}
