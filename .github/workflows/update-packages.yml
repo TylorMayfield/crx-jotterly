@@ -1,0 +1,44 @@
+name: Auto Update Packages
+
+on:
+  schedule:
+    # Run the workflow once a week at midnight UTC on Sunday
+    - cron: "0 0 * * SUN"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # You can update this to the version you prefer
+
+      - name: Install dependencies
+        run: npm ci # Ensures that the exact versions in package-lock.json are installed
+
+      - name: Update dependencies
+        run: npm update # This updates all dependencies to their latest compatible versions
+
+      - name: Set Git author identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Commit changes if dependencies were updated
+        run: |
+          # Check if there are any changes in package.json or package-lock.json
+          git diff --exit-code package.json package-lock.json || (
+            git add package.json package-lock.json && 
+            git commit -m "Update dependencies" && 
+            git push origin HEAD
+          )
