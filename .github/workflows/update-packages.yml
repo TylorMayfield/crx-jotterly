@@ -1,9 +1,6 @@
 name: Auto Update Packages
 
 on:
-  schedule:
-    # Run the workflow once a week at midnight UTC on Sunday
-    - cron: "0 0 * * SUN"
   workflow_dispatch:
 
 permissions:
@@ -26,8 +23,15 @@ jobs:
       - name: Install dependencies
         run: npm ci # Ensures that the exact versions in package-lock.json are installed
 
+      - name: Delete old package-lock.json
+        run: |
+          # Remove the old package-lock.json file
+          rm -f package-lock.json
+
       - name: Update dependencies
-        run: npm update # This updates all dependencies to their latest compatible versions
+        run: |
+          # Run npm update to update the dependencies and generate a new package-lock.json
+          npm update
 
       - name: Set Git author identity
         run: |
