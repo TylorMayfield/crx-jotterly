@@ -2,9 +2,6 @@ name: Auto Update Packages
 
 on:
   workflow_dispatch:
-  schedule:
-    # Run the workflow once a week at midnight UTC on Sunday
-    - cron: "0 0 * * SUN"
 
 permissions:
   contents: write
